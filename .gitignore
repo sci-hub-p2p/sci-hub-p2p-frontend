@@ -1,7 +1,7 @@
 .DS_Store
 node_modules
 /dist
-
+/sci-hub*.exe
 
 # local env files
 .env.local

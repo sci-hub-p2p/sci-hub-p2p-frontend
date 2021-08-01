@@ -1,0 +1,1 @@
+./sci-hub_windows_64.exe daemon http

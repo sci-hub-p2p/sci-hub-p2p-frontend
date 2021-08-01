@@ -4,6 +4,7 @@
         <v-main>
             <router-view />
         </v-main>
+        <snackbar />
     </v-app>
 </template>
 
@@ -16,11 +17,13 @@ body::-webkit-scrollbar {
 
 <script>
 import AppDrawer from "./components/Drawer.vue";
+import Snackbar from "./components/Snackbar.vue";
 
 export default {
     name: "app",
     components: {
         AppDrawer,
+        Snackbar,
     },
 };
 </script>

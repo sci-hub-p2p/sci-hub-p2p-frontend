@@ -2,6 +2,13 @@
 
 import Vue from 'vue';
 import axios from "axios";
+import store from '../store';
+
+const snackbar = (msg, color = 'primary') => store
+  .dispatch("snackbar/openSnackbar", {
+    msg: msg,
+    color: color,
+  });
 
 // Full config:  https://github.com/axios/axios#request-config
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
@@ -9,6 +16,7 @@ import axios from "axios";
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 let config = {
+  baseURL: "http://127.0.0.1:2333/api/v0"
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
   // timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
@@ -17,12 +25,13 @@ let config = {
 const _axios = axios.create(config);
 
 _axios.interceptors.request.use(
-  function (config) {
-    // Do something before request is sent
-    return config;
+  function (response) {
+    console.log('[Axios Request Success]', response);
+    return response;
   },
   function (error) {
-    // Do something with request error
+    console.log('[Axios Request Error]', error);
+    snackbar(error, 'error');
     return Promise.reject(error);
   }
 );
@@ -30,11 +39,12 @@ _axios.interceptors.request.use(
 // Add a response interceptor
 _axios.interceptors.response.use(
   function (response) {
-    // Do something with response data
+    console.log('[Axios Response Success]', response);
     return response;
   },
   function (error) {
-    // Do something with response error
+    console.log('[Axios Response Error]', error);
+    snackbar(error, 'error');
     return Promise.reject(error);
   }
 );
@@ -57,6 +67,7 @@ Plugin.install = function (Vue) {
   });
 };
 
+Vue.prototype.$axios = axios
 Vue.use(Plugin)
 
 export default Plugin;

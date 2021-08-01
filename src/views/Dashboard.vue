@@ -5,6 +5,7 @@
             <v-card-subtitle>
                 To remove all barriers in the way of science.
             </v-card-subtitle>
+            <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
         </v-card>
         <v-card elevation="0" outlined class="my-4">
             <v-text-field
@@ -15,6 +16,8 @@
                 outlined
                 append-icon="mdi-magnify"
                 @click:append="search"
+                @keyup.enter="search"
+                v-model="doi"
             >
             </v-text-field>
         </v-card>
@@ -24,13 +27,16 @@
                 <template v-slot:default>
                     <tbody>
                         <tr v-for="(value, key) in status" :key="key">
-                            <td class="no-border">{{ key.replace(key[0],key[0].toUpperCase()) }}</td>
+                            <td class="no-border">
+                                {{ key.replace(key[0], key[0].toUpperCase()) }}
+                            </td>
                             <td class="no-border">{{ value }}</td>
                         </tr>
                     </tbody>
                 </template>
             </v-simple-table>
         </v-card>
+        <router-link :to="'/' + doi" style="display: none"></router-link>
     </v-container>
 </template>
 
@@ -44,6 +50,7 @@
 export default {
     name: "Dashboard",
     data: () => ({
+        loading: false,
         rules: [
             (value) => !!value || "Required.",
             (value) =>
@@ -51,17 +58,31 @@ export default {
                 "Should be DOI.",
         ],
         status: {
-            version: "v0.0.1",
-            commit: "8aj2nsa8",
-            builder: "go version go1.16.6 windows/amd64",
-            build_time: "2021-07-31T19:44:54.569Z",
-            os: "windows",
-            arch: "amd64",
-            base_dir: "/path/to/.sci-hub-p2p",
+            version: "",
+            commit: "",
+            builder: "",
+            build_time: "",
+            os: "",
+            arch: "",
+            base_dir: "",
         },
+        doi: "",
     }),
     methods: {
-        search: () => {},
+        updateStatus() {
+            this.loading = true;
+            this.$axios
+                .get("/debug")
+                .then((response) => (this.status = response.data));
+            this.loading = false;
+        },
+        search() {
+            if (!!this.doi && /^10.\d{4,9}\/[-._;()/:A-Z0-9]+$/i.test(this.doi))
+            this.$router.push("/" + this.doi);
+        },
+    },
+    mounted() {
+        this.updateStatus();
     },
 };
 </script>

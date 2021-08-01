@@ -1,5 +1,5 @@
 <template>
-    <div style="line-height: 0;">
+    <div style="line-height: 0">
         <v-container v-if="loading">
             <v-card elevation="0" class="pt-10 my-4" outlined>
                 <v-card-title> Loading </v-card-title>
@@ -30,13 +30,29 @@
 export default {
     name: "view",
     data: () => ({
-        loading: false,
-        found: true,
+        loading: true,
+        found: false,
         doi: "",
         blob: "https://bilibili.com",
     }),
+    methods: {
+        getPaper() {
+            this.loading = true;
+            this.$axios.get("/paper?doi=" + this.doi).then((response) => {
+                this.found = true;
+                const binaryData = [];
+                binaryData.push(response.data);
+                let pdfUrl = window.URL.createObjectURL(
+                    new Blob(binaryData, { type: "application/pdf" })
+                );
+                if (pdfUrl) this.blob = pdfUrl;
+            });
+            this.loading = false;
+        },
+    },
     mounted() {
         this.doi = this.$route.path.substr(1);
+        this.getPaper();
     },
 };
 </script>
