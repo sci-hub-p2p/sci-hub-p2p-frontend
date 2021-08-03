@@ -11,6 +11,11 @@ Vue.prototype.$info = {
   packageInfo: packageInfo,
 }
 
+Vue.prototype.setLocalStorageArray = (key, arr) =>
+  localStorage.setItem(key, JSON.stringify(arr));
+Vue.prototype.getLocalStorageArray = (key) => { const value = localStorage.getItem(key); return value ? JSON.parse(value) : [] }
+Vue.prototype.delLocalStorageItem = (key) => localStorage.removeItem(key)
+
 new Vue({
   vuetify,
   router,

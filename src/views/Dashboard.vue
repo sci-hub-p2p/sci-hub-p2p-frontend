@@ -1,47 +1,59 @@
 <template>
-    <v-container>
-        <v-card elevation="0" class="pt-10 my-4" outlined>
-            <v-card-title> Dashboard </v-card-title>
-            <v-card-subtitle>
-                To remove all barriers in the way of science.
-            </v-card-subtitle>
-            <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
-        </v-card>
-        <v-card elevation="0" outlined class="my-4">
-            <v-text-field
-                hide-details="auto"
-                label="Search"
-                :rules="rules"
-                placeholder="Enter DOI"
-                outlined
-                append-icon="mdi-magnify"
-                @click:append="search"
-                @keyup.enter="search"
-                v-model="doi"
-            >
-            </v-text-field>
-        </v-card>
-        <v-card elevation="0" class="my-4 pb-2" outlined>
-            <v-card-title> Status </v-card-title>
-            <v-simple-table dense>
-                <template v-slot:default>
-                    <tbody>
-                        <tr>
-                            <td class="no-border"> GUI Version </td>
-                            <td class="no-border">{{ $info.packageInfo.version }}</td>
-                        </tr>
-                        <tr v-for="(value, key) in status" :key="key">
-                            <td class="no-border">
-                                {{ key.replace(key[0], key[0].toUpperCase()) }}
-                            </td>
-                            <td class="no-border">{{ value }}</td>
-                        </tr>
-                    </tbody>
-                </template>
-            </v-simple-table>
-        </v-card>
-        <router-link :to="'/' + doi" style="display: none"></router-link>
-    </v-container>
+    <div :class="$vuetify.breakpoint.mobile ? 'mt-n3 mx-1' : 'mx-3'">
+        <v-container>
+            <v-card elevation="0" class="pt-10 my-4" outlined>
+                <v-card-title> Dashboard </v-card-title>
+                <v-card-subtitle>
+                    To remove all barriers in the way of science.
+                </v-card-subtitle>
+                <v-progress-linear
+                    indeterminate
+                    v-if="loading"
+                ></v-progress-linear>
+            </v-card>
+            <v-card elevation="0" outlined class="my-4">
+                <v-text-field
+                    hide-details="auto"
+                    label="Search"
+                    :rules="rules"
+                    placeholder="Enter DOI"
+                    outlined
+                    append-icon="mdi-magnify"
+                    @click:append="search"
+                    @keyup.enter="search"
+                    v-model="doi"
+                >
+                </v-text-field>
+            </v-card>
+            <v-card elevation="0" class="my-4 pb-2" outlined>
+                <v-card-title> Status </v-card-title>
+                <v-simple-table dense>
+                    <template v-slot:default>
+                        <tbody>
+                            <tr>
+                                <td class="no-border">GUI Version</td>
+                                <td class="no-border">
+                                    {{ $info.packageInfo.version }}
+                                </td>
+                            </tr>
+                            <tr v-for="(value, key) in status" :key="key">
+                                <td class="no-border">
+                                    {{
+                                        key.replace(
+                                            key[0],
+                                            key[0].toUpperCase()
+                                        )
+                                    }}
+                                </td>
+                                <td class="no-border">{{ value }}</td>
+                            </tr>
+                        </tbody>
+                    </template>
+                </v-simple-table>
+            </v-card>
+            <router-link :to="'/' + doi" style="display: none"></router-link>
+        </v-container>
+    </div>
 </template>
 
 <style>
@@ -82,7 +94,7 @@ export default {
         },
         search() {
             if (!!this.doi && /^10.\d{4,9}\/[-._;()/:A-Z0-9]+$/i.test(this.doi))
-            this.$router.push("/" + this.doi);
+                this.$router.push("/" + this.doi);
         },
     },
     mounted() {

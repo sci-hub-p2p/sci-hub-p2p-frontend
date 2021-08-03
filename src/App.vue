@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <app-drawer />
-        <v-main :class="$vuetify.breakpoint.mobile ? 'mt-n3 mx-1' : 'mx-3'">
+        <v-main>
             <router-view />
         </v-main>
         <snackbar />

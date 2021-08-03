@@ -1,20 +1,25 @@
 <template>
     <div style="line-height: 0">
-        <v-container v-if="loading">
-            <v-card elevation="0" class="pt-10 my-4" outlined>
-                <v-card-title> Loading </v-card-title>
-                <v-progress-linear indeterminate></v-progress-linear>
-            </v-card>
-        </v-container>
-        <v-container v-else-if="!found">
-            <v-card elevation="0" class="pt-10 my-4" outlined>
-                <v-card-title> Page Not Found </v-card-title>
-                <v-card-subtitle>
-                    Looks like you've followed a broken link or entered a URL
-                    that doesn't exist on this site.
-                </v-card-subtitle>
-            </v-card>
-        </v-container>
+        <div
+            v-if="loading | !found"
+            :class="$vuetify.breakpoint.mobile ? 'mt-n3 mx-1' : 'mx-3'"
+        >
+            <v-container v-if="loading">
+                <v-card elevation="0" class="pt-10 my-4" outlined>
+                    <v-card-title> Loading </v-card-title>
+                    <v-progress-linear indeterminate></v-progress-linear>
+                </v-card>
+            </v-container>
+            <v-container v-else-if="!found">
+                <v-card elevation="0" class="pt-10 my-4" outlined>
+                    <v-card-title> Page Not Found </v-card-title>
+                    <v-card-subtitle>
+                        Looks like you've followed a broken link or entered a
+                        URL that doesn't exist on this site.
+                    </v-card-subtitle>
+                </v-card>
+            </v-container>
+        </div>
         <iframe :src="blob" class="app-paper" frameborder="0" v-else></iframe>
     </div>
 </template>
@@ -44,6 +49,7 @@ export default {
                 })
                 .then((response) => {
                     this.found = true;
+                    this.updateHistory(this.doi, true);
                     const binaryData = [];
                     binaryData.push(response.data);
                     this.blob = window.URL.createObjectURL(
@@ -52,7 +58,12 @@ export default {
                         })
                     );
                 })
-                .catch((error) => this.exception(error.response))
+                .catch(
+                    (error) => (
+                        this.exception(error.response),
+                        this.updateHistory(this.doi, false)
+                    )
+                )
                 .then(() => (this.loading = false));
         },
         exception(data) {
@@ -66,6 +77,15 @@ export default {
                     color: "warning",
                 });
             };
+        },
+        updateHistory(doi, status) {
+            var storage = this.getLocalStorageArray("history");
+            storage.unshift({
+                doi: doi,
+                status: status,
+                ts: new Date().getTime(),
+            });
+            this.setLocalStorageArray("history", storage);
         },
     },
     mounted() {
