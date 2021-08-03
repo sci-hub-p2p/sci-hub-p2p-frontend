@@ -56,7 +56,7 @@ export default {
         updateTorrents() {
             this.loading = true;
             this.$axios
-                .get("/torrents")
+                .get("/torrent")
                 .then((response) => (this.torrents = response.data.data));
             this.loading = false;
         },
@@ -67,10 +67,10 @@ export default {
             if (null === this.file) return (this.error = "File required.");
             switch (filetype) {
                 case "lzma":
-                    api = "indexes";
+                    api = "index";
                     break;
                 case "torrent":
-                    api = "torrents";
+                    api = "torrent";
                     break;
                 default:
                     return (this.error = "Need index(.lzma) or torrent file.");

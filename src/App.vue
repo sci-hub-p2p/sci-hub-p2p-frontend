@@ -24,6 +24,6 @@ export default {
     components: {
         AppDrawer,
         Snackbar,
-    }
+    },
 };
 </script>

@@ -44,7 +44,6 @@ export default {
                 })
                 .then((response) => {
                     this.found = true;
-                    console.log(1);
                     const binaryData = [];
                     binaryData.push(response.data);
                     this.blob = window.URL.createObjectURL(
@@ -59,9 +58,13 @@ export default {
         exception(data) {
             if (typeof undefined == data) return;
             var reader = new FileReader();
-            reader.readAsText(data, "utf-8");
-            reader.onload = function () {
+            reader.readAsText(data.data, "utf-8");
+            reader.onload = () => {
                 data = JSON.parse(reader.result);
+                this.$store.dispatch("snackbar/openSnackbar", {
+                    msg: data.message,
+                    color: "warning",
+                });
             };
         },
     },
