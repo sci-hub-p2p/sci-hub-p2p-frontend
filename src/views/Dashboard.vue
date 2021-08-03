@@ -26,6 +26,10 @@
             <v-simple-table dense>
                 <template v-slot:default>
                     <tbody>
+                        <tr>
+                            <td class="no-border"> GUI Version </td>
+                            <td class="no-border">{{ $info.packageInfo.version }}</td>
+                        </tr>
                         <tr v-for="(value, key) in status" :key="key">
                             <td class="no-border">
                                 {{ key.replace(key[0], key[0].toUpperCase()) }}

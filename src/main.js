@@ -4,8 +4,12 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify'
 import router from './router.js'
 import store from './store'
+import packageInfo from '../package.json'
 
 Vue.config.productionTip = false
+Vue.prototype.$info = {
+  packageInfo: packageInfo,
+}
 
 new Vue({
   vuetify,

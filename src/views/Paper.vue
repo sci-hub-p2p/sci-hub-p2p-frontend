@@ -6,8 +6,8 @@
                 <v-progress-linear indeterminate></v-progress-linear>
             </v-card>
         </v-container>
-        <v-container v-else-if="!found"
-            ><v-card elevation="0" class="pt-10 my-4" outlined>
+        <v-container v-else-if="!found">
+            <v-card elevation="0" class="pt-10 my-4" outlined>
                 <v-card-title> Page Not Found </v-card-title>
                 <v-card-subtitle>
                     Looks like you've followed a broken link or entered a URL
@@ -33,21 +33,36 @@ export default {
         loading: true,
         found: false,
         doi: "",
-        blob: "https://bilibili.com",
+        blob: "",
     }),
     methods: {
         getPaper() {
             this.loading = true;
-            this.$axios.get("/paper?doi=" + this.doi).then((response) => {
-                this.found = true;
-                const binaryData = [];
-                binaryData.push(response.data);
-                let pdfUrl = window.URL.createObjectURL(
-                    new Blob(binaryData, { type: "application/pdf" })
-                );
-                if (pdfUrl) this.blob = pdfUrl;
-            });
-            this.loading = false;
+            this.$axios
+                .get("/paper?doi=" + this.doi, {
+                    responseType: "blob",
+                })
+                .then((response) => {
+                    this.found = true;
+                    console.log(1);
+                    const binaryData = [];
+                    binaryData.push(response.data);
+                    this.blob = window.URL.createObjectURL(
+                        new Blob(binaryData, {
+                            type: "application/pdf",
+                        })
+                    );
+                })
+                .catch((error) => this.exception(error.response))
+                .then(() => (this.loading = false));
+        },
+        exception(data) {
+            if (typeof undefined == data) return;
+            var reader = new FileReader();
+            reader.readAsText(data, "utf-8");
+            reader.onload = function () {
+                data = JSON.parse(reader.result);
+            };
         },
     },
     mounted() {

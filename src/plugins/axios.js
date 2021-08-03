@@ -30,7 +30,7 @@ _axios.interceptors.request.use(
     return response;
   },
   function (error) {
-    console.log('[Axios Request Error]', error);
+    console.log('[Axios Request Error]', error.toJSON());
     snackbar(error, 'error');
     return Promise.reject(error);
   }

@@ -5,6 +5,7 @@
             <v-card-subtitle>
                 Add a torrent or an indexes file to database.
             </v-card-subtitle>
+            <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
         </v-card>
         <v-card elevation="0" outlined class="my-4">
             <v-file-input
@@ -15,50 +16,98 @@
                 outlined
                 append-icon="mdi-file-upload-outline"
                 v-model="file"
-                @click:append="upload"
+                :error-messages="error"
+                @click:append="uploadFile"
+                @change="uploadFile"
             >
             </v-file-input>
+        </v-card>
+        <v-card elevation="0" class="my-4 pb-2" outlined>
+            <v-card-title> Torrents in Database </v-card-title>
+            <v-simple-table dense>
+                <template v-slot:default>
+                    <tbody>
+                        <tr v-for="(value, key) in torrents" :key="key">
+                            <td class="no-border">{{ value.name }}</td>
+                            <td class="no-border">{{ value.info_hash }}</td>
+                        </tr>
+                    </tbody>
+                </template>
+            </v-simple-table>
         </v-card>
     </v-container>
 </template>
 
+<style>
+.no-border {
+    border-width: 0 !important;
+}
+</style>
+
 <script>
 export default {
     data: () => ({
+        loading: false,
         file: null,
+        error: "",
+        torrents: [],
     }),
     methods: {
-        upload() {
-            if (null === this.file) return;
+        updateTorrents() {
+            this.loading = true;
+            this.$axios
+                .get("/torrents")
+                .then((response) => (this.torrents = response.data.data));
+            this.loading = false;
+        },
+        uploadFile() {
+            var api = "";
             var fr = new FileReader();
-            var filetype = this.file.name.split('.').pop();
-            var api = '';
-            if (filetype == '') {
-                api = 'indexes';
-            } else if(filetype == '') {
-                api = 'torrent';
-            } else return;
+            var filetype = this.file.name.split(".").pop();
+            if (null === this.file) return (this.error = "File required.");
+            switch (filetype) {
+                case "lzma":
+                    api = "indexes";
+                    break;
+                case "torrent":
+                    api = "torrents";
+                    break;
+                default:
+                    return (this.error = "Need index(.lzma) or torrent file.");
+            }
+            this.error = "";
             fr.readAsArrayBuffer(this.file);
             fr.addEventListener(
                 "loadend",
                 (e) => {
-                    var buf = e.target.result;
+                    this.loading = true;
                     this.axios
-                        .put(api, buf, {
+                        .put(api, e.target.result, {
                             headers: {
-                                'Content-Type': 'application/octet-stream'
-                            }
+                                "Content-Type": "application/octet-stream",
+                            },
                         })
-                        .then(function (response) {
-                            console.log(response);
+                        .then(() => {
+                            this.$store.dispatch("snackbar/openSnackbar", {
+                                msg: "File successfully uploaded.",
+                                color: "success",
+                            });
+                            if (filetype == "torrent") this.updateTorrents();
                         })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
+                        .catch((error) => {
+                            this.$store.dispatch("snackbar/openSnackbar", {
+                                msg: error.response.data.message,
+                                color: "warning",
+                            });
+                        })
+                        .then(() => (this.loading = false));
                 },
                 false
             );
         },
+    },
+    mounted() {
+        this.updateTorrents();
     },
 };
 </script>
