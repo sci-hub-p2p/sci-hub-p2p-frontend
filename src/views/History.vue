@@ -19,7 +19,7 @@
                     <template v-slot:default>
                         <tbody>
                             <tr
-                                v-for="(value, key) in history"
+                                v-for="(value, key) in getPage(page)"
                                 :key="key"
                                 @click="$router.push('/' + value.doi)"
                             >
@@ -44,6 +44,11 @@
                     </template>
                 </v-simple-table>
             </v-card>
+            <v-pagination
+                v-model="page"
+                class="my-4"
+                :length="totalPage"
+            ></v-pagination>
         </v-container>
     </div>
 </template>
@@ -52,10 +57,21 @@
 export default {
     data: () => ({
         history: [],
+        page: 1,
+        totalPage: 1,
+        perPage: 20,
     }),
     methods: {
         getHistory() {
             this.history = this.getLocalStorageArray("history");
+            this.totalPage = Math.ceil(this.history.length / this.perPage);
+        },
+        getPage(page) {
+            return this.history.filter(
+                (_, index) =>
+                    index >= this.perPage * (page - 1) &&
+                    index <= this.perPage * page
+            );
         },
         cleanHistory() {
             this.delLocalStorageItem("history");
