@@ -25,33 +25,22 @@
                 >
                 </v-text-field>
             </v-card>
-            <v-card elevation="0" class="my-4 pb-2" outlined>
-                <v-card-title> Status </v-card-title>
-                <v-simple-table dense>
+            <v-card elevation="0" class="my-4" outlined>
+                <v-simple-table>
                     <template v-slot:default>
                         <tbody>
                             <tr>
-                                <td class="no-border">GUI Version</td>
-                                <td class="no-border">
-                                    {{ $info.packageInfo.version }}
+                                <td class="no-border mono">
+                                    Sci-Hub on P2P {{ status.version }} (built:
+                                    {{ status.build_time }} ) (
+                                    {{ status.builder }} ) with WebGUI
+                                    {{ guiVersion }}
                                 </td>
-                            </tr>
-                            <tr v-for="(value, key) in status" :key="key">
-                                <td class="no-border">
-                                    {{
-                                        key.replace(
-                                            key[0],
-                                            key[0].toUpperCase()
-                                        )
-                                    }}
-                                </td>
-                                <td class="no-border">{{ value }}</td>
                             </tr>
                         </tbody>
                     </template>
                 </v-simple-table>
             </v-card>
-            <router-link :to="'/' + doi" style="display: none"></router-link>
         </v-container>
     </div>
 </template>
@@ -59,6 +48,9 @@
 <style>
 .no-border {
     border-width: 0 !important;
+}
+.mono {
+    font-family: SFMono-Regular, Consolas, Menlo, monospace;
 }
 </style>
 
@@ -95,6 +87,11 @@ export default {
         search() {
             if (!!this.doi && /^10.\d{4,9}\/[-._;()/:A-Z0-9]+$/i.test(this.doi))
                 this.$router.push("/" + this.doi);
+        },
+    },
+    computed: {
+        guiVersion() {
+            return this.$info.packageInfo.version;
         },
     },
     mounted() {

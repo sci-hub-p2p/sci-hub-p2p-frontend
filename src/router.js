@@ -20,6 +20,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "update" */ './views/Update.vue')
   },
   {
+    path: '/debug',
+    name: 'Debug',
+    component: () => import(/* webpackChunkName: "debug" */ './views/Debug.vue')
+  },
+  {
     path: '/10.(\\d{4,9})/*',
     name: 'Paper',
     component: () => import(/* webpackChunkName: "paper" */ './views/Paper.vue')
