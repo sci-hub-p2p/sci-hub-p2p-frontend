@@ -2,8 +2,10 @@ name: Release Ci
 
 on:
   push:
+    branches:
+      - master
     tags:
-      - "*.*.*"
+      - "v*.*.*"
 
 jobs:
   release:
