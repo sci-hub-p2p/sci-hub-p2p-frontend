@@ -16,7 +16,7 @@ const snackbar = (msg, color = 'primary') => store
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 let config = {
-  baseURL: "http://127.0.0.1:2333/api/v0"
+  baseURL: process.env.NODE_ENV == 'production' ? '/api/v0' : "http://127.0.0.1:2333/api/v0"
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
   // timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
