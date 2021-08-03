@@ -1,9 +1,9 @@
-name: Release
+name: Release Ci
 
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "*.*.*"
 
 jobs:
   release:
