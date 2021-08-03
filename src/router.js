@@ -21,7 +21,7 @@ const routes = [
   },
   {
     path: '/10.(\\d{4,9})/*',
-    name: 'View',
+    name: 'Paper',
     component: () => import(/* webpackChunkName: "paper" */ './views/Paper.vue')
   },
   {

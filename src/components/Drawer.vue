@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer permanent expand-on-hover app>
+    <v-navigation-drawer permanent :expand-on-hover="$vuetify.breakpoint.mobile" app>
         <v-list-item>
             <v-list-item-icon class="app-icon">
                 <v-icon>mdi-library</v-icon>
@@ -28,20 +28,31 @@
             </router-link>
         </v-list>
         <template v-slot:append>
-            <a :href="github" class="app-nav-item" target="_blank">
-                <v-list nav>
+            <v-list nav>
+                <v-list-item link @click="applyDarkMode(!$vuetify.theme.dark)">
+                    <v-list-item-icon>
+                        <v-icon>mdi-theme-light-dark</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            Switch to
+                            {{ $vuetify.theme.dark ? "Light" : "Dark" }}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <a :href="github" class="app-nav-item" target="_blank">
                     <v-list-item link>
                         <v-list-item-icon>
                             <v-icon>mdi-github</v-icon>
                         </v-list-item-icon>
                         <v-list-item-content>
-                            <v-list-item-title
-                                >View on GitHub</v-list-item-title
-                            >
+                            <v-list-item-title>
+                                View on GitHub
+                            </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                </v-list>
-            </a>
+                </a>
+            </v-list>
         </template>
     </v-navigation-drawer>
 </template>
@@ -57,9 +68,12 @@
 </style>
 
 <script>
+import Darkmode from "../plugins/darkmode";
+
 export default {
     data() {
         return {
+            applyDarkMode() {},
             github: "https://github.com/sci-hub-p2p",
             items: [
                 {
@@ -80,6 +94,9 @@ export default {
             ],
             right: null,
         };
+    },
+    mounted() {
+        Darkmode(this);
     },
 };
 </script>

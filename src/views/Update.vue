@@ -61,10 +61,10 @@ export default {
             this.loading = false;
         },
         uploadFile() {
+            if (null === this.file) return (this.error = "File required.");
             var api = "";
             var fr = new FileReader();
             var filetype = this.file.name.split(".").pop();
-            if (null === this.file) return (this.error = "File required.");
             switch (filetype) {
                 case "lzma":
                     api = "index";

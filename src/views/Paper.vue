@@ -28,7 +28,7 @@
 
 <script>
 export default {
-    name: "view",
+    name: "paper",
     data: () => ({
         loading: true,
         found: false,
